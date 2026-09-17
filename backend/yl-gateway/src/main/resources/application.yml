@@ -1,0 +1,38 @@
+server.port: 8080
+spring:
+  application:
+    name: yl-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        ip: ${NACOS_DISCOVERY_IP:}
+        fail-fast: false
+    gateway:
+      httpclient:
+        websocket:
+          max-frame-payload-length: 10485760
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: asr-ws
+          uri: lb:ws://yl-asr
+          predicates:
+            - Path=/ws/asr/**
+        - id: asr-api
+          uri: lb://yl-asr
+          predicates:
+            - Path=/api/asr/**
+        - id: nursing-api
+          uri: lb://yl-nursing
+          predicates:
+            - Path=/api/nursing/**
+        - id: nursing-web
+          uri: lb://yl-nursing
+          predicates:
+            - Path=/,/*.html,/css/**,/js/**

@@ -1,0 +1,33 @@
+name: yl-funasr
+
+# 仅 FunASR。默认只绑宿主机 127.0.0.1:10095，不对公网暴露。
+# 本机 yl-asr：ssh -L 10095:127.0.0.1:10095 USER@39.107.60.241
+# 同机 yl-asr：FUNASR_WS_URL=ws://127.0.0.1:10095
+
+services:
+  funasr:
+    build: .
+    image: yl-care/funasr-paraformer-zh-streaming:cpu
+    container_name: yl-funasr
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      FUNASR_BIND: 0.0.0.0
+      FUNASR_PORT: "10095"
+      FUNASR_DEVICE: cpu
+      FUNASR_TOKEN: ${FUNASR_TOKEN:-}
+      FUNASR_ONLINE_MODEL: paraformer-zh-streaming
+      FUNASR_OFFLINE_MODEL: paraformer-zh
+    volumes:
+      - funasr-models:/models
+    ports:
+      - "127.0.0.1:10095:10095"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:10095/health', timeout=3)\""]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 300s
+
+volumes:
+  funasr-models:

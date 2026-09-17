@@ -1,0 +1,155 @@
+name: yl-care
+
+services:
+  nacos:
+    image: nacos/nacos-server:v2.3.2
+    container_name: yl-nacos
+    hostname: nacos
+    environment:
+      MODE: standalone
+      PREFER_HOST_MODE: hostname
+      NACOS_AUTH_ENABLE: "false"
+    ports:
+      - "127.0.0.1:8848:8848"
+      - "127.0.0.1:9848:9848"
+    volumes:
+      - nacos-data:/home/nacos/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8848/nacos/v1/console/health/liveness || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+    restart: unless-stopped
+
+  funasr:
+    build:
+      context: ./backend/funasr
+      dockerfile: Dockerfile
+    image: yl-care/funasr-paraformer-zh-streaming:cpu
+    container_name: yl-funasr
+    hostname: funasr
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      FUNASR_BIND: 0.0.0.0
+      FUNASR_PORT: "10095"
+      FUNASR_DEVICE: cpu
+      FUNASR_TOKEN: ${FUNASR_TOKEN:-}
+      FUNASR_ONLINE_MODEL: paraformer-zh-streaming
+      FUNASR_OFFLINE_MODEL: paraformer-zh
+    volumes:
+      - funasr-models:/models
+    ports:
+      - "127.0.0.1:10095:10095"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:10095/health', timeout=3)\""]
+      interval: 15s
+      timeout: 5s
+      retries: 40
+      start_period: 600s
+
+  yl-asr:
+    build:
+      context: ./backend
+      dockerfile: yl-asr/Dockerfile
+    container_name: yl-asr
+    hostname: yl-asr
+    environment:
+      TZ: Asia/Shanghai
+      NACOS_ADDR: nacos:8848
+      NACOS_DISCOVERY_IP: yl-asr
+      YL_ASR_PROVIDER: ${YL_ASR_PROVIDER:-funasr}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      FUNASR_WS_URL: ${FUNASR_WS_URL:-ws://funasr:10095}
+      FUNASR_TOKEN: ${FUNASR_TOKEN:-}
+      JAVA_TOOL_OPTIONS: -Djava.net.preferIPv4Stack=true
+    depends_on:
+      nacos:
+        condition: service_healthy
+      funasr:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8081'"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+
+  yl-nursing:
+    build:
+      context: ./backend
+      dockerfile: yl-nursing/Dockerfile
+    container_name: yl-nursing
+    hostname: yl-nursing
+    environment:
+      TZ: Asia/Shanghai
+      NACOS_ADDR: nacos:8848
+      NACOS_DISCOVERY_IP: yl-nursing
+      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/nursing;MODE=MySQL"
+      YL_MEDIA_DIR: /data/media
+      JAVA_TOOL_OPTIONS: -Djava.net.preferIPv4Stack=true
+    volumes:
+      - nursing-data:/data
+    depends_on:
+      nacos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8082'"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+
+  yl-gateway:
+    build:
+      context: ./backend
+      dockerfile: yl-gateway/Dockerfile
+    container_name: yl-gateway
+    hostname: yl-gateway
+    environment:
+      TZ: Asia/Shanghai
+      NACOS_ADDR: nacos:8848
+      NACOS_DISCOVERY_IP: yl-gateway
+      JAVA_TOOL_OPTIONS: -Djava.net.preferIPv4Stack=true
+    ports:
+      - "8080:8080"
+    depends_on:
+      nacos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8080'"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend/h5
+      dockerfile: Dockerfile
+    container_name: yl-frontend
+    ports:
+      - "8181:80"
+    depends_on:
+      yl-gateway:
+        condition: service_healthy
+      yl-asr:
+        condition: service_healthy
+      yl-nursing:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/start.html || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  nacos-data:
+  nursing-data:
+  funasr-models:

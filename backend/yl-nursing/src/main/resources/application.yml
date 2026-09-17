@@ -1,0 +1,34 @@
+server.port: 8082
+spring:
+  application:
+    name: yl-nursing
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        ip: ${NACOS_DISCOVERY_IP:}
+        fail-fast: false
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:file:./data/nursing;MODE=MySQL;AUTO_SERVER=TRUE}
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  h2:
+    console:
+      enabled: true
+yl:
+  media:
+    dir: ${YL_MEDIA_DIR:./data/media}
+  frontend:
+    dir: ${YL_FRONTEND_DIR:${YL_CARE_ROOT:D:/yl-care}/frontend/h5}

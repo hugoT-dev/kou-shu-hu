@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>口述护 · 护理员端</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="stage">
+    <div class="phone" id="phone">
+      <div class="statusbar"><span>9:41</span><span>● ■</span></div>
+      <div class="nav">
+        <button class="back hidden" id="back" type="button">返回</button>
+        <span id="navTitle">口述护</span>
+      </div>
+      <div class="screen" id="screen"></div>
+      <div class="toast" id="toast"></div>
+    </div>
+    <aside class="side">
+      <h2>护理员操作说明</h2>
+      <ol>
+        <li>点「记录」，按住圆形按钮，文字会一个个跳出来（流式）。</li>
+        <li>松开后可点绿色播放键听原声；异常记录可拍照、短视频。</li>
+        <li>保存后进入详情，再去「交接」「确认」听原声、看影像。</li>
+      </ol>
+      <p style="margin-top:16px;font-size:13px;color:#6b7280">也可点此切换示例：</p>
+      <p style="margin-top:8px"><button class="chip go" id="demoA" type="button">常规：王奶奶</button></p>
+      <p style="margin-top:8px"><button class="chip go" id="demoB" type="button">异常：李爷爷</button></p>
+      <p style="margin-top:16px;font-size:14px"><a href="start.html">← 站点图</a>　<a href="admin.html">院长端</a></p>
+    </aside>
+  </div>
+  <script src="js/caregiver.js"></script>
+</body>
+</html>

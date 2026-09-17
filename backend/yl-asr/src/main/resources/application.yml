@@ -1,0 +1,24 @@
+server.port: 8081
+spring:
+  application:
+    name: yl-asr
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        ip: ${NACOS_DISCOVERY_IP:}
+        fail-fast: false
+yl:
+  asr:
+    provider: ${YL_ASR_PROVIDER:mock}
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY:}
+      model: paraformer-realtime-v2
+      sample-rate: 16000
+    funasr:
+      ws-url: ${FUNASR_WS_URL:ws://127.0.0.1:10095}
+      model: paraformer-zh-streaming
+      sample-rate: 16000
+      token: ${FUNASR_TOKEN:}
+      chunk-size: ${FUNASR_CHUNK_SIZE:0,10,5}
+      hotwords: '{"王奶奶":20,"李爷爷":20,"张奶奶":20,"血压":30,"咳嗽":20}'

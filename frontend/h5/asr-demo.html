@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>口述护 · FunASR 链路演示</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="demo-page">
+    <p class="demo-back"><a href="start.html">← 站点图</a>　<a href="caregiver.html">护理员端</a></p>
+    <h1>FunASR 实时识别演示</h1>
+    <p class="sub">浏览器把 16k PCM 推到本页所在的 nginx:80，经网关到 yl-asr，再转到容器内 <code>ws://funasr:10095</code>。浏览器不直连 FunASR。</p>
+
+    <ol class="pipe" id="pipe">
+      <li data-hop="browser"><b>浏览器</b><span>16k PCM</span></li>
+      <li data-hop="nginx"><b>nginx:80</b><span>/ws/asr/stream</span></li>
+      <li data-hop="asr"><b>yl-asr</b><span>转 PCM</span></li>
+      <li data-hop="funasr"><b>funasr:10095</b><span>paraformer-zh-streaming</span></li>
+    </ol>
+
+    <div class="demo-grid">
+      <section class="demo-card">
+        <h2>链路状态</h2>
+        <pre class="demo-health" id="health">正在探测 /api/asr/health …</pre>
+        <p class="hint" id="insecureHint" hidden>当前是 HTTP 公网地址，Chrome 可能禁止麦克风。可用「上传 WAV」绕过，或把本源加入 chrome://flags 的 insecure origins treated as secure。</p>
+        <div class="demo-actions">
+          <button class="btn primary" id="micBtn" type="button">按住说话</button>
+          <label class="btn ghost demo-file">
+            上传 WAV
+            <input id="fileInput" type="file" accept="audio/*,.wav,.pcm" hidden />
+          </label>
+        </div>
+        <p class="hint" id="status">未开始</p>
+      </section>
+      <section class="demo-card">
+        <h2>识别结果</h2>
+        <div class="demo-live" id="live">按住说话或上传音频后，这里边说边出字。</div>
+        <p class="hint" id="meta"></p>
+      </section>
+    </div>
+    <section class="demo-card">
+      <h2>事件日志</h2>
+      <pre class="demo-log" id="log"></pre>
+    </section>
+  </div>
+  <script src="js/asr-demo.js"></script>
+</body>
+</html>

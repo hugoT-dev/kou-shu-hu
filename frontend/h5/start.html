@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>口述护 · 原型站点图</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="site">
+    <h1>口述护 可点击原型</h1>
+    <p class="sub">交接班清单 + 护理记录语音录入。用浏览器直接打开本页即可，不是 Axure 工程。</p>
+    <div class="site-grid">
+      <div class="site-card">
+        <h2>护理员端（核心）</h2>
+        <ol>
+          <li><a href="caregiver.html">首页三按钮</a></li>
+          <li>记录：按住说话，文字边说边出 → 播放原声 → 异常可拍照/录像 → 保存</li>
+          <li>交接：本班清单可听原声、看影像 → 确认交班</li>
+          <li>确认：听原声、看影像 → 逐条已了解 → 完成接班</li>
+        </ol>
+        <p style="margin-top:12px"><a href="caregiver.html">进入护理员端 →</a></p>
+        <p style="margin-top:8px"><a href="asr-demo.html">FunASR 链路演示（真实麦克风 / WAV → nginx:80 → yl-asr → funasr:10095）→</a></p>
+      </div>
+      <div class="site-card">
+        <h2>院长端</h2>
+        <ol>
+          <li><a href="admin.html">今日异常</a></li>
+          <li>护理记录查询与导出</li>
+          <li>交接确认率</li>
+        </ol>
+        <p style="margin-top:12px"><a href="admin.html">进入院长端 →</a></p>
+      </div>
+    </div>
+    <p class="note">
+      建议路径：护理员端按住录「5床李爷爷咳嗽」（可见流式出字）→ 播放原声并保存 → 交接清单看影像 → 确认页接班。院长端点「原声」「详情」回放。
+      FunASR 演示页走真实链路：浏览器 → 前端 nginx:80（宿主机 8181）→ 网关 → yl-asr → 容器内 ws://funasr:10095。
+    </p>
+  </div>
+</body>
+</html>
