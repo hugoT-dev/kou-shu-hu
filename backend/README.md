@@ -43,7 +43,7 @@ mvn -pl yl-asr,yl-nursing,yl-gateway -am spring-boot:run
 
 或分别在 IDE 中运行三个 `*Application`。地址默认 `127.0.0.1:8848`，可用环境变量 `NACOS_ADDR` 覆盖。
 
-3. 打开 http://localhost:8080/caregiver.html
+3. 前端：`cd ../frontend && npm install && npm run dev`，打开 http://127.0.0.1:5181/ 。若要让网关托管静态页，先 `npm run build`，再打开 http://localhost:8080/ 。
 
 FunASR 与 Java 同机时：`YL_ASR_PROVIDER=funasr FUNASR_WS_URL=ws://127.0.0.1:10095`。镜像在 `backend/funasr`。
 

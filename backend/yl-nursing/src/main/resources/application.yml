@@ -31,4 +31,4 @@ yl:
   media:
     dir: ${YL_MEDIA_DIR:./data/media}
   frontend:
-    dir: ${YL_FRONTEND_DIR:${YL_CARE_ROOT:D:/yl-care}/frontend/h5}
+    dir: ${YL_FRONTEND_DIR:${YL_CARE_ROOT:D:/yl-care}/frontend/dist}

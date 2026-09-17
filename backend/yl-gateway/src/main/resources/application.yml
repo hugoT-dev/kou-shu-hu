@@ -35,4 +35,4 @@ spring:
         - id: nursing-web
           uri: lb://yl-nursing
           predicates:
-            - Path=/,/*.html,/css/**,/js/**
+            - Path=/,/index.html,/assets/**

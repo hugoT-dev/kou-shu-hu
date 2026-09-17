@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
             }
         }
         if (!locations.isEmpty()) {
-            registry.addResourceHandler("/", "/index.html", "/*.html", "/css/**", "/js/**")
+            registry.addResourceHandler("/", "/index.html", "/assets/**")
                     .addResourceLocations(locations.toArray(String[]::new));
         }
     }
@@ -41,9 +41,9 @@ public class WebConfig implements WebMvcConfigurer {
             list.add(Path.of(configured).toAbsolutePath().normalize());
         }
         Path cwd = Path.of(System.getProperty("user.dir")).toAbsolutePath();
-        list.add(cwd.resolve("../../frontend/h5").normalize());
-        list.add(cwd.resolve("../frontend/h5").normalize());
-        list.add(Path.of("D:/yl-care/frontend/h5"));
+        list.add(cwd.resolve("../../frontend/dist").normalize());
+        list.add(cwd.resolve("../frontend/dist").normalize());
+        list.add(Path.of("D:/yl-care/frontend/dist"));
         return list;
     }
 }

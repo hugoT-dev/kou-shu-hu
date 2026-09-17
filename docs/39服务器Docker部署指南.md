@@ -58,7 +58,7 @@ df -h
 sudo mkdir -p /opt/yl-care
 # 上传完成后：
 cd /opt/yl-care
-ls docker-compose.yml backend/funasr frontend/h5
+ls docker-compose.yml backend/funasr frontend
 ```
 
 Windows 拖文件时注意：不要只传一部分；必须带上 `backend/`、`frontend/`、根目录 `docker-compose.yml`。
@@ -135,17 +135,15 @@ python3 -c "import socket;s=socket.create_connection(('127.0.0.1',10095),3);s.cl
 curl -sS http://127.0.0.1:8080/api/asr/health
 # 期望含 "provider":"funasr"、"pcm":true、"model":"paraformer-zh-streaming"
 
-curl -sS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8181/start.html
+curl -sS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8181/
 ```
 
 在**你的电脑浏览器**（安全组已放行 8181）：
 
 | 入口 | 地址 |
 |------|------|
-| H5 | http://39.107.60.241:8181/ |
-| 护理员 | http://39.107.60.241:8181/caregiver.html |
-| FunASR 演示 | http://39.107.60.241:8181/asr-demo.html |
-| 网关直连（若开了 8080） | http://39.107.60.241:8080/caregiver.html |
+| H5 Demo | http://39.107.60.241:8181/ |
+| 网关直连（若开了 8080） | http://39.107.60.241:8080/ |
 
 Nacos 控制台不要映射公网。若要看：在 MobaXterm 建 SSH 隧道 `8848` → `127.0.0.1:8848`，再打开 http://127.0.0.1:8848/nacos （`nacos` / `nacos`）。
 
